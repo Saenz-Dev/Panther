@@ -60,9 +60,7 @@ class UserAction implements IRequest
      */
     public static function post($request)
     {
-        // echo $request[0] . " ESTE ES EL REQUEST";
         if ($request[0] == self::LOGIN) {
-            echo "Entra al if del post";
             $instance = new self();  
             return $instance->loguin();
         } else {
@@ -102,13 +100,9 @@ class UserAction implements IRequest
     public function loguin()
     {
         try {
-            echo "Entra a login";
             $userLogin = JSONUtil::decodeJSON();
-            echo $userLogin->user;
             $userBD = self::authenticate($userLogin->user, $userLogin->password);
-            echo "Despues del userBD";
             if ($userBD != NULL) {
-                echo "Entra a hacer el contentBODY";
                 $user = new User();
                 $user->user = $userBD['user'];
                 $user->roles = $userBD['roles'];
@@ -136,8 +130,6 @@ class UserAction implements IRequest
     public function authenticate($userA, $passwordPlain)
     {
         $query = SELECT_USER;
-        echo $userA;
-        echo $passwordPlain;
         $statement = Connection::getInstance()->getConnection()->prepare($query);
         $statement->bindParam(1, $userA);
         $statement->execute();

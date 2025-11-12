@@ -77,9 +77,8 @@ if (!in_array($resource, $resourcesExisting)) {
 }
 
 $method = strtolower($_SERVER['REQUEST_METHOD']);
-// echo $resource, PHP_EOL;
 if ($resource == "login") $resource = "useraction";
-// echo $resource, PHP_EOL;
+
 // Filtrar método
 switch ($method) {
     case 'get':
@@ -88,15 +87,6 @@ switch ($method) {
     case 'post':
         echo "resource: $resource", PHP_EOL, "method: $method", PHP_EOL;
         if (method_exists($resource, $method)) {
-            echo "Entro al if", PHP_EOL;
-            // Inicializa la tabla o recurso
-            // $instance = new $resource();
-            // call_user_func(array(
-            //     $instance,
-            //     INIT_TABLE
-            // ));
-            echo "Despues de inittable", PHP_EOL;;
-            print_r( $request);
             // Ejecuta la función post del recurso
             $answer = call_user_func(array(
                 $resource,

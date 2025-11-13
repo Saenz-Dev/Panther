@@ -66,9 +66,12 @@ abstract class Request
     public static function get($request)
     {
         UserAction::authenticator();
-        if (empty($request[0])) {
+        // $otro = JSONUtil::decodeJSON();
+        // print_r($otro);
+        if (empty($request)) {
             return self::getRequest(null);
         } else {
+            echo "Entra a get request\n";
             return self::getRequest($request);
         }
     }
@@ -126,7 +129,8 @@ abstract class Request
     private static function getRequest($id)
     {
         try {
-            if (empty($id)) {
+            if (empty($id->id)) {
+                echo 'Entra al if\n';
                 $query = "SELECT * FROM " . self::$nameTable;
                 // Preparar sentencia
                 $statement = Connection::getInstance()->getConnection()->prepare($query);
@@ -135,10 +139,11 @@ abstract class Request
                 // Preparar statement
                 $statement = Connection::getInstance()->getConnection()->prepare($query);
                 // Ligar id
-                $statement->bindParam(1, $id[0], PDO::PARAM_INT);
+                $statement->bindParam(1, $id->id, PDO::PARAM_INT);
             }
             
             // Ejecutar sentencia preparada
+            print_r($id);
             $statement->execute();
             $tempo = $statement->fetchAll(PDO::FETCH_ASSOC);
             

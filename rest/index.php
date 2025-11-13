@@ -67,7 +67,7 @@ if (isset($_GET['PATH_INFO'])) {
 
 // Separación de resources de la url
 $resource = $request[0];
-print_r($request);
+// print_r($request);
 // Recursos existentes para servicios rest
 $resourcesExisting = RESOURCES_URL;
 
@@ -77,15 +77,35 @@ if (!in_array($resource, $resourcesExisting)) {
 }
 
 $method = strtolower($_SERVER['REQUEST_METHOD']);
-if ($resource == "login") $resource = "useraction";
+if ($resource == "login")
+    $resource = "useraction";
 
 // Filtrar método
 switch ($method) {
     case 'get':
-        echo "Entra a get";
-        break;
+        echo "Entra a get\n";
+        if (method_exists($resource, $method)) {
+            echo "GET:\n resource:$resource \n metod:$method \n request:$request[0]\n";
+            // Innvoca para inicializar nombre de tabla
+            $instance = new $resource;
+            call_user_func(array(
+                $instance,
+                INIT_TABLE
+            ));
+            $cuerpo = (JSONUtil::decodeJSON());
+            print_r($cuerpo);
+            // Innvoca la funciones http
+            $answer = call_user_func(array(
+                $resource,
+                $method
+            ), $cuerpo);
+            $view->viewPrint($answer);
+            break;
+        } else {
+            throw new ExcepcionAPI(BAD_REQUEST, ST400, error_url);
+        }
     case 'post':
-        echo "resource: $resource", PHP_EOL, "method: $method", PHP_EOL;
+        // echo "resource: $resource", PHP_EOL, "method: $method", PHP_EOL;
         if (method_exists($resource, $method)) {
             // Ejecuta la función post del recurso
             $answer = call_user_func(array(

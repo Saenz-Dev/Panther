@@ -77,9 +77,9 @@ class UserAction implements IRequest
     public static function authenticator()
     {
         $heads = apache_request_headers();
+        // print_r($heads);
         if (isset($heads[AUTHORIZATION])) {
             $keyAPI = $heads[AUTHORIZATION];
-
             if (UserAction::validateKeyAPI($keyAPI)) {
                 $bodyAnswer = new ContentBody(OK, 403, sucessful);
                 return $bodyAnswer;

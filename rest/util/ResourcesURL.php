@@ -19,7 +19,7 @@ define("RESOURCES_URL", array(
 /**
  * Cabecera de autenticación del token
  */
-define("AUTHORIZATION", "authorization");
+define("AUTHORIZATION", "Authorization");
 
 /**
  * Nombre del metodo que permite cargar el nombre de la tabla

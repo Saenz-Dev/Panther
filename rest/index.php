@@ -24,6 +24,7 @@ require 'util/ResourcesURL.php';
 require 'util/JSONUtil.php';
 require 'model/core/segurity/User.php';
 require 'querys/core/SegurityQuery.php';
+require 'ctrl/core/segurity/ValidacionDatos.php';
 
 //Business
 require 'ctrl/business/Persons.php';
@@ -83,7 +84,6 @@ if ($resource == "login")
 // Filtrar método
 switch ($method) {
     case 'get':
-        // echo "Entra a get\n";
         if (method_exists($resource, $method)) {
             // echo "GET:\n resource:$resource \n metod:$method \n request:$request[0]\n";
             // Innvoca para inicializar nombre de tabla
@@ -93,7 +93,7 @@ switch ($method) {
                 INIT_TABLE
             ));
             $cuerpo = (JSONUtil::decodeJSON());
-            // print_r($cuerpo);
+
             // Innvoca la funciones http
             $answer = call_user_func(array(
                 $resource,
@@ -101,8 +101,6 @@ switch ($method) {
             ), $cuerpo);
             $view->viewPrint($answer);
             break;
-        } else {
-            throw new ExcepcionAPI(BAD_REQUEST, ST400, error_url);
         }
     case 'post':
         // echo "resource: $resource", PHP_EOL, "method: $method", PHP_EOL;
@@ -113,7 +111,12 @@ switch ($method) {
                     $instance,
                     INIT_TABLE
                 ));
-                $request = JSONUtil::decodeJSON();
+            }
+            $request = JSONUtil::decodeJSON();
+            if ($resource == "persons") {
+                ValidacionDatos::validarNombreApellido($request->name);   
+                ValidacionDatos::validarNombreApellido($request->lastName);
+                ValidacionDatos::validarTelefono($request->phone);
             }
             // Ejecuta la función post del recurso
             // echo "$resource\n$method\n\n";
@@ -123,8 +126,6 @@ switch ($method) {
             ), $request);
             $view->viewPrint($answer);
             break;
-        } else {
-            throw new ExcepcionAPI(BAD_REQUEST, ST400, error_url);
         }
     case 'put':
         if (method_exists($resource, $method)) {
@@ -134,7 +135,12 @@ switch ($method) {
                     $instance,
                     INIT_TABLE
                 ));
-                $request = JSONUtil::decodeJSON();
+            }
+            $request = JSONUtil::decodeJSON();
+            if ($resource == "persons") {
+                ValidacionDatos::validarNombreApellido($request->name);
+                ValidacionDatos::validarNombreApellido($request->lastName);
+                ValidacionDatos::validarTelefono($request->phone);
             }
             // Ejecuta la función post del recurso
             // echo "$resource\n$method\n\n";
@@ -144,8 +150,6 @@ switch ($method) {
             ), $request);
             $view->viewPrint($answer);
             break;
-        } else {
-            throw new ExcepcionAPI(BAD_REQUEST, ST400, error_url);
         }
     case 'delete': {
         if (method_exists($resource, $method)) {
@@ -165,14 +169,12 @@ switch ($method) {
             ), $request);
             $view->viewPrint($answer);
             break;
-        } else {
-            throw new ExcepcionAPI(BAD_REQUEST, ST400, error_url);
         }
     }
     default: {
         // Método no aceptado
-        throw new ExcepcionAPI(BAD_REQUEST, ST400, error_url);
         $view->viewPrint($body);
+        throw new ExcepcionAPI(BAD_REQUEST, ST400, error_url);
     }
 }
 ?>

@@ -71,7 +71,7 @@ abstract class Request
         if (empty($request)) {
             return self::getRequest(null);
         } else {
-            echo "Entra a get request\n";
+            // echo "Entra a get request\n";
             return self::getRequest($request);
         }
     }
@@ -85,7 +85,7 @@ abstract class Request
     public static function post($request)
     {
         UserAction::authenticator();
-        $object = \JSONUtil::decodeJSON();
+        $object = JSONUtil::decodeJSON();
         self::createRequest($object);
         $bodyAnswer = new ContentBody(CREATE, ST201, sucessful);
         
@@ -103,7 +103,7 @@ abstract class Request
     {
         UserAction::authenticator();
         $object = \JSONUtil::decodeJSON();
-        $tempo = self::updateRequest($object, $request[0]);
+        $tempo = self::updateRequest($object, $object->id);
         
         if ($tempo > 0) {
             return $bodyAnswer = new ContentBody(OK, ST200, sucessful);
@@ -115,7 +115,8 @@ abstract class Request
     public static function delete($request)
     {
         UserAction::authenticator();
-        self::deleteRequest($request);
+        $object = \JSONUtil::decodeJSON();
+        self::deleteRequest($object->id);
         return $bodyAnswer = new ContentBody(OK, ST200, sucessful);
     }
 
@@ -130,7 +131,7 @@ abstract class Request
     {
         try {
             if (empty($id->id)) {
-                echo 'Entra al if\n';
+                // echo 'Entra al if\n';
                 $query = "SELECT * FROM " . self::$nameTable;
                 // Preparar sentencia
                 $statement = Connection::getInstance()->getConnection()->prepare($query);
@@ -143,7 +144,7 @@ abstract class Request
             }
             
             // Ejecutar sentencia preparada
-            print_r($id);
+            // print_r($id);
             $statement->execute();
             $tempo = $statement->fetchAll(PDO::FETCH_ASSOC);
             
@@ -164,7 +165,7 @@ abstract class Request
      * @throws ExcepcionApi
      * @return string
      */
-    private function createRequest($object)
+    private static function createRequest($object)
     {
         try {
             $pdo = Connection::getInstance()->getConnection();
@@ -172,7 +173,8 @@ abstract class Request
             $query = self::$queryInsert;
             // Preparar la statement
             $statement = $pdo->prepare($query);
-            static::insertParameter($object, $statement);
+            $instance = new static();
+            $instance->insertParameter($object, $statement);
             $statement->execute();
             // Retornar en el útimo id insertado
             return $pdo->lastInsertId();
@@ -189,14 +191,15 @@ abstract class Request
      * @throws ExcepcionApi Lanza una excepcion si hay un error en la actualización
      * @return number Número de columna actualizada.
      */
-    private function updateRequest($object, $id)
+    private static function updateRequest($object, $id)
     {
         try {
             // Creando consulta UPDATE
             $query = self::$queryUpdate;
             // Preparar la sentencia
             $statement = Connection::getInstance()->getConnection()->prepare($query);
-            static::updateParameter($object, $statement, $id);
+            $instance = new static();
+            $instance->updateParameter($object, $statement, $id);
             // Ejecutar la sentencia
             $statement->execute();
             
@@ -214,11 +217,12 @@ abstract class Request
      * @throws ExcepcionApi Lanza un error si hay problemas en la conexion
      * @return number Numero de filas Afeactadas
      */
-    private function deleteRequest($id)
+    private static function deleteRequest($id)
     {
         try {
             
-            if (empty($id[0])) {
+            date_default_timezone_set('America/Bogota');
+            if (empty($id)) {
                 $query = "UPDATE " . self::$nameTable . " SET dateDelete = ? ";
                 // Preparar sentencia
                 $statement = Connection::getInstance()->getConnection()->prepare($query);
@@ -230,7 +234,7 @@ abstract class Request
                 $statement = Connection::getInstance()->getConnection()->prepare($query);
                 $dateDelete = date('Y-m-d H:i:s');
                 $statement->bindParam(1, $dateDelete, PDO::PARAM_STR);
-                $statement->bindParam(2, $id[0], PDO::PARAM_INT);
+                $statement->bindParam(2, $id, PDO::PARAM_INT);
             }
             
             $statement->execute();

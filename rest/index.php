@@ -51,8 +51,8 @@ switch ($format) {
 set_exception_handler(function ($exception) use ($view) {
     // Cuando se presente error Call to undefined method Error::getState()
     // comentar linea y descomentar siguiente
-    // $bodyAnswer = new ContentBody($exception->getState(), $exception->getCode(), $exception->getMessage());
-    $bodyAnswer = new ContentBody(INTERNAL_SERVER_ERROR, ST500, $exception->getMessage());
+    $bodyAnswer = new ContentBody($exception->getState(), $exception->getCode(), $exception->getMessage());
+    // $bodyAnswer = new ContentBody(INTERNAL_SERVER_ERROR, ST500, $exception->getMessage());
     $view->viewPrint($bodyAnswer);
 });
 
@@ -83,9 +83,9 @@ if ($resource == "login")
 // Filtrar método
 switch ($method) {
     case 'get':
-        echo "Entra a get\n";
+        // echo "Entra a get\n";
         if (method_exists($resource, $method)) {
-            echo "GET:\n resource:$resource \n metod:$method \n request:$request[0]\n";
+            // echo "GET:\n resource:$resource \n metod:$method \n request:$request[0]\n";
             // Innvoca para inicializar nombre de tabla
             $instance = new $resource;
             call_user_func(array(
@@ -93,7 +93,7 @@ switch ($method) {
                 INIT_TABLE
             ));
             $cuerpo = (JSONUtil::decodeJSON());
-            print_r($cuerpo);
+            // print_r($cuerpo);
             // Innvoca la funciones http
             $answer = call_user_func(array(
                 $resource,
@@ -107,7 +107,16 @@ switch ($method) {
     case 'post':
         // echo "resource: $resource", PHP_EOL, "method: $method", PHP_EOL;
         if (method_exists($resource, $method)) {
+            if ($resource != "useraction") {
+                $instance = new $resource;
+                call_user_func(array(
+                    $instance,
+                    INIT_TABLE
+                ));
+                $request = JSONUtil::decodeJSON();
+            }
             // Ejecuta la función post del recurso
+            // echo "$resource\n$method\n\n";
             $answer = call_user_func(array(
                 $resource,
                 $method
@@ -118,15 +127,37 @@ switch ($method) {
             throw new ExcepcionAPI(BAD_REQUEST, ST400, error_url);
         }
     case 'put':
-        echo "Entra a put";
-        break;
+        if (method_exists($resource, $method)) {
+            if ($resource != "useraction") {
+                $instance = new $resource;
+                call_user_func(array(
+                    $instance,
+                    INIT_TABLE
+                ));
+                $request = JSONUtil::decodeJSON();
+            }
+            // Ejecuta la función post del recurso
+            // echo "$resource\n$method\n\n";
+            $answer = call_user_func(array(
+                $resource,
+                $method
+            ), $request);
+            $view->viewPrint($answer);
+            break;
+        } else {
+            throw new ExcepcionAPI(BAD_REQUEST, ST400, error_url);
+        }
     case 'delete': {
         if (method_exists($resource, $method)) {
             // Innvoca para inicializar nombre de tabla
-            call_user_func(array(
-                $resource,
-                INIT_TABLE
-            ));
+            if ($resource != "useraction") {
+                $instance = new $resource;
+                call_user_func(array(
+                    $instance,
+                    INIT_TABLE
+                ));
+                $request = JSONUtil::decodeJSON();
+            }
             // Innvoca la funciones http
             $answer = call_user_func(array(
                 $resource,

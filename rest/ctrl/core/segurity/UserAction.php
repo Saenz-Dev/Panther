@@ -134,6 +134,7 @@ class UserAction implements IRequest
         $statement->bindParam(1, $userA);
         $statement->execute();
         $user = $statement->fetch();
+        if ($user == NULL) return;
         if (password_verify($passwordPlain, $user["password"])) {
             return $user;
         } else {

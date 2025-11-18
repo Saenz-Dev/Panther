@@ -65,7 +65,7 @@ abstract class Request
      */
     public static function get($request)
     {
-        UserAction::authenticator();
+        Authenticator::authenticator();
         // $otro = JSONUtil::decodeJSON();
         // print_r($otro);
         if (empty($request)) {
@@ -84,7 +84,7 @@ abstract class Request
      */
     public static function post($request)
     {
-        UserAction::authenticator();
+        Authenticator::authenticator();
         $object = JSONUtil::decodeJSON();
         self::createRequest($object);
         $bodyAnswer = new ContentBody(CREATE, ST201, sucessful);
@@ -101,7 +101,7 @@ abstract class Request
      */
     public static function put($request)
     {
-        UserAction::authenticator();
+        Authenticator::authenticator();
         $object = \JSONUtil::decodeJSON();
         $tempo = self::updateRequest($object, $object->id);
         
@@ -114,7 +114,7 @@ abstract class Request
 
     public static function delete($request)
     {
-        UserAction::authenticator();
+        Authenticator::authenticator();
         $object = \JSONUtil::decodeJSON();
         self::deleteRequest($object->id);
         return $bodyAnswer = new ContentBody(OK, ST200, sucessful);

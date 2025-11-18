@@ -7,12 +7,14 @@
  */
 class ValidacionDatos {
     public static function validarNombreApellido($datos) {
-        if (strlen($datos) == 0 || strlen($datos) <= 3 || strlen($datos) > 30) {
+        $regex = "/^(?=.{3,30}$)[a-zA-ZÁÉÍÓÚáéíóú\sÑñ]+(?:\s[a-zA-ZÁÉÍÓÚáéíóú\sÑñ]+)*$/";
+        if (!preg_match($regex, $datos)) {
             throw new ExcepcionApi(BAD_REQUEST, ST400, error_Structure_data);
         }
     }
     public static function validarTelefono($datos) {
-        if (strlen($datos) != 10) {
+        $regex = "/^3\d{9}$/";
+        if (!preg_match($regex, $datos)) {
             throw new ExcepcionApi(BAD_REQUEST, ST400, error_Structure_data);
         }
     }

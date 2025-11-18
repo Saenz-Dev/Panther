@@ -6,11 +6,14 @@
 /**
  * *Importa los resources necesarios para el funcionamiento de la clase
  */
+require 'ctrl/core/util/UtilAuth.php';
+require 'ctrl/core/auth/Authenticator.php';
 require 'cxn/Connection.php';
 require 'ctrl/core/commun/Request.php';
 require 'ctrl/core/commun/IRequest.php';
 require 'ctrl/core/segurity/Users.php';
-require 'ctrl/core/segurity/UserAction.php';
+require 'ctrl/core/commun/RequestLogin.php';
+require 'ctrl/core/segurity/Login.php';
 require 'ctrl/core/segurity/Roles.php';
 require 'view/ViewAPI.php';
 require 'view/ViewXML.php';
@@ -52,8 +55,8 @@ switch ($format) {
 set_exception_handler(function ($exception) use ($view) {
     // Cuando se presente error Call to undefined method Error::getState()
     // comentar linea y descomentar siguiente
-    $bodyAnswer = new ContentBody($exception->getState(), $exception->getCode(), $exception->getMessage());
-    // $bodyAnswer = new ContentBody(INTERNAL_SERVER_ERROR, ST500, $exception->getMessage());
+    // $bodyAnswer   = new ContentBody($exception->getState(), $exception->getCode(), $exception->getMessage());
+    $bodyAnswer = new ContentBody(INTERNAL_SERVER_ERROR, ST500, $exception->getMessage());
     $view->viewPrint($bodyAnswer);
 });
 
@@ -78,8 +81,8 @@ if (!in_array($resource, $resourcesExisting)) {
 }
 
 $method = strtolower($_SERVER['REQUEST_METHOD']);
-if ($resource == "login")
-    $resource = "useraction";
+// if ($resource == "login")
+//     $resource = "useraction";
 
 // Filtrar método
 switch ($method) {
@@ -87,7 +90,7 @@ switch ($method) {
         if (method_exists($resource, $method)) {
             // echo "GET:\n resource:$resource \n metod:$method \n request:$request[0]\n";
             // Innvoca para inicializar nombre de tabla
-            $instance = new $resource;
+            $instance = new $resource();
             call_user_func(array(
                 $instance,
                 INIT_TABLE
@@ -105,16 +108,16 @@ switch ($method) {
     case 'post':
         // echo "resource: $resource", PHP_EOL, "method: $method", PHP_EOL;
         if (method_exists($resource, $method)) {
-            if ($resource != "useraction") {
-                $instance = new $resource;
-                call_user_func(array(
-                    $instance,
-                    INIT_TABLE
-                ));
-            }
+            // if ($resource != "useraction") {
+            $instance = new $resource();
+            call_user_func(array(
+                $instance,
+                INIT_TABLE
+            ));
+            // }
             $request = JSONUtil::decodeJSON();
             if ($resource == "persons") {
-                ValidacionDatos::validarNombreApellido($request->name);   
+                ValidacionDatos::validarNombreApellido($request->name);
                 ValidacionDatos::validarNombreApellido($request->lastName);
                 ValidacionDatos::validarTelefono($request->phone);
             }
@@ -129,13 +132,13 @@ switch ($method) {
         }
     case 'put':
         if (method_exists($resource, $method)) {
-            if ($resource != "useraction") {
-                $instance = new $resource;
-                call_user_func(array(
-                    $instance,
-                    INIT_TABLE
-                ));
-            }
+            // if ($resource != "useraction") {
+            $instance = new $resource;
+            call_user_func(array(
+                $instance,
+                INIT_TABLE
+            ));
+            // }
             $request = JSONUtil::decodeJSON();
             if ($resource == "persons") {
                 ValidacionDatos::validarNombreApellido($request->name);
@@ -154,14 +157,14 @@ switch ($method) {
     case 'delete': {
         if (method_exists($resource, $method)) {
             // Innvoca para inicializar nombre de tabla
-            if ($resource != "useraction") {
-                $instance = new $resource;
-                call_user_func(array(
-                    $instance,
-                    INIT_TABLE
-                ));
-                $request = JSONUtil::decodeJSON();
-            }
+            // if ($resource != "useraction") {
+            $instance = new $resource;
+            call_user_func(array(
+                $instance,
+                INIT_TABLE
+            ));
+            $request = JSONUtil::decodeJSON();
+            // }
             // Innvoca la funciones http
             $answer = call_user_func(array(
                 $resource,

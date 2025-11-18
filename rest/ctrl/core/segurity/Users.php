@@ -35,8 +35,8 @@ class Users extends Request
      */
     public function insertParameter($object, $statement)
     {
-        $encryptPassword = UserAction::encrytPassword($object->password);
-        $keyApi = UserAction::getKeyAPI();
+        $encryptPassword = UtilAuth::encrytPassword($object->password);
+        $keyApi = UtilAuth::getKeyAPI();
         
         $statement->bindParam(1, $object->user);
         $statement->bindParam(2, $encryptPassword);
@@ -51,8 +51,8 @@ class Users extends Request
      */
     public function updateParameter($object, $statement, $id)
     {
-        $encryptPassword = UserAction::encrytPassword($object->password);
-        $keyApi = UserAction::getKeyAPI();
+        $encryptPassword = UtilAuth::encrytPassword($object->password);
+        $keyApi = UtilAuth::getKeyAPI();
         $statement->bindParam(1, $encryptPassword);
         $statement->bindParam(2, $keyApi);
         $statement->bindParam(3, $object->roles);

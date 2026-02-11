@@ -12,4 +12,6 @@
 define("INTSERT_PERSON", "INSERT INTO person(name, lastName, phone) VALUES (?,?,?);");
 define("UPDATE_PERSON", "UPDATE person SET name=?, lastName =? , phone=? WHERE id=? ;");
 
+define("INTSERT_PET", "INSERT INTO pet(name, race, gender) VALUES (?,?,?);");
+define("UPDATE_PET", "UPDATE pet SET name=?, race =? , gender=? WHERE id=? ;");
 ?>

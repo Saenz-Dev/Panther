@@ -1,12 +1,12 @@
 <?php
 
 /**
- * <b>Descripcion:</b> Clase que <br/>contiene los usuarios de la aplicación
+ * <b>Descripcion:</b> Clase que <br/>contiene las mascotas de la aplicación
  * <b>Caso de Uso:</b> PANTHER-Seguridad <br/>
  *
- * @author Josué Nicolás Pinzón Villamil <a href = "mailto:jpinzon@j4sysol.com">jpinzon@j4sysol.com</a>
+ * @author Miguel Angel Saenz Tibambre <a href = "mailto:miguel.saenz02@uptc.edu.co">miguel.saenz02@uptc.edu.co</a>
  */
-class Person
+class Pet
 {
 
     /**
@@ -17,25 +17,25 @@ class Person
     public $id;
 
     /**
-     * Nombre de usuario
+     * Nombre de mascota
      *
-     * @var string user
+     * @var string pet
      */
     public $name;
 
     /**
-     * Contraseña de usuario
+     * Raza de mascota
      *
-     * @var string password
+     * @var string race
      */
-    public $lastName;
+    public $race;
 
     /**
-     * Roles asociados
+     * Genero de mascota
      *
-     * @var Rol roles
+     * @var string gender
      */
-    public $phone;
+    public $gender;
     /**
      * @return the $id
      */
@@ -53,19 +53,19 @@ class Person
     }
 
     /**
-     * @return the $lastName
+     * @return the $race
      */
-    public function getLastName()
+    public function getRace()
     {
-        return $this->lastName;
+        return $this->race;
     }
 
     /**
-     * @return the $phone
+     * @return the $gender
      */
-    public function getPhone()
+    public function getGender()
     {
-        return $this->phone;
+        return $this->gender;
     }
 
     /**
@@ -85,20 +85,19 @@ class Person
     }
 
     /**
-     * @param string $lastName
+     * @param string $race
      */
-    public function setLastName($lastName)
+    public function setRace($race)
     {
-        $this->lastName = $lastName;
+        $this->race = $race;
     }
 
     /**
-     * @param Rol $phone
+     * @param string $gender
      */
-    public function setPhone($phone)
+    public function setGender($gender)
     {
-        $this->phone = $phone;
+        $this->gender = $gender;
     }
 }
 ?>
-

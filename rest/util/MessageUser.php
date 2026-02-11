@@ -15,6 +15,7 @@ define("error_noParameter", "La solicitud no contiene parametros suficientes y/o
 define("noAutheticate", "El usuario o contraseña no son validos");
 define("sucessful", "Transacción Exitosa");
 define("error_KeyAPI", "Se requiere Token para autenticar, Verifique nombre de parametro");
-define("error_Structure_data", "Longitud de datos incorrecta, verifique los datos.")
+define("error_Structure_data", "Longitud de datos incorrecta, verifique los datos.");
+define("error_numeric_data", "Los datos no pueden ser numéricos.");
 
 ?>

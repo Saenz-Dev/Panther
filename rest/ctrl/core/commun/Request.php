@@ -85,10 +85,10 @@ abstract class Request
     public static function post($request)
     {
         Authenticator::authenticator();
-        $object = JSONUtil::decodeJSON();
-        self::createRequest($object);
+        $body = \JSONUtil::decodeJSON();
+        ValidacionDatos::validarDatos($request, $body);
+        self::createRequest($body);
         $bodyAnswer = new ContentBody(CREATE, ST201, sucessful);
-        
         return $bodyAnswer;
     }
 
@@ -102,9 +102,10 @@ abstract class Request
     public static function put($request)
     {
         Authenticator::authenticator();
-        $object = \JSONUtil::decodeJSON();
-        $tempo = self::updateRequest($object, $object->id);
-        
+        $body = \JSONUtil::decodeJSON();
+        ValidacionDatos::validarDatos($request, $body);
+        $tempo = self::updateRequest($body, $body->id);
+
         if ($tempo > 0) {
             return $bodyAnswer = new ContentBody(OK, ST200, sucessful);
         } else {
@@ -142,12 +143,12 @@ abstract class Request
                 // Ligar id
                 $statement->bindParam(1, $id->id, PDO::PARAM_INT);
             }
-            
+
             // Ejecutar sentencia preparada
             // print_r($id);
             $statement->execute();
             $tempo = $statement->fetchAll(PDO::FETCH_ASSOC);
-            
+
             if (count($tempo) > 0) {
                 $bodyAnswer = new ContentBody(OK, ST200, $tempo);
                 return $bodyAnswer;
@@ -202,7 +203,7 @@ abstract class Request
             $instance->updateParameter($object, $statement, $id);
             // Ejecutar la sentencia
             $statement->execute();
-            
+
             return $statement->rowCount();
         } catch (Exception $e) {
             throw new ExcepcionApi(INTERNAL_SERVER_ERROR, ST500, $e->getMessage());
@@ -220,7 +221,7 @@ abstract class Request
     private static function deleteRequest($id)
     {
         try {
-            
+
             date_default_timezone_set('America/Bogota');
             if (empty($id)) {
                 $query = "UPDATE " . self::$nameTable . " SET dateDelete = ? ";
@@ -236,9 +237,9 @@ abstract class Request
                 $statement->bindParam(1, $dateDelete, PDO::PARAM_STR);
                 $statement->bindParam(2, $id, PDO::PARAM_INT);
             }
-            
+
             $statement->execute();
-            
+
             return $statement->rowCount();
         } catch (Exception $e) {
             throw new ExcepcionApi(INTERNAL_SERVER_ERROR, ST500, $e->getMessage());

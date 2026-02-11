@@ -32,6 +32,8 @@ require 'ctrl/core/segurity/ValidacionDatos.php';
 //Business
 require 'ctrl/business/Persons.php';
 require 'model/business/Person.php';
+require 'ctrl/business/Pets.php';
+require 'model/business/Pet.php';
 require 'querys/business/BusinessQuery.php';
 
 // Preparar manejo de excepciones
@@ -89,6 +91,8 @@ switch ($method) {
     case 'get':
         if (method_exists($resource, $method)) {
             // echo "GET:\n resource:$resource \n metod:$method \n request:$request[0]\n";
+
+            // echo "GET:\n resource:$resource \n method:$method \n request:$request[0]\n";
             // Innvoca para inicializar nombre de tabla
             $instance = new $resource();
             call_user_func(array(
@@ -115,12 +119,8 @@ switch ($method) {
                 INIT_TABLE
             ));
             // }
-            $request = JSONUtil::decodeJSON();
-            if ($resource == "persons") {
-                ValidacionDatos::validarNombreApellido($request->name);
-                ValidacionDatos::validarNombreApellido($request->lastName);
-                ValidacionDatos::validarTelefono($request->phone);
-            }
+            //$request = JSONUtil::decodeJSON();
+
             // Ejecuta la función post del recurso
             // echo "$resource\n$method\n\n";
             $answer = call_user_func(array(
@@ -139,12 +139,8 @@ switch ($method) {
                 INIT_TABLE
             ));
             // }
-            $request = JSONUtil::decodeJSON();
-            if ($resource == "persons") {
-                ValidacionDatos::validarNombreApellido($request->name);
-                ValidacionDatos::validarNombreApellido($request->lastName);
-                ValidacionDatos::validarTelefono($request->phone);
-            }
+            // $request = JSONUtil::decodeJSON();
+            
             // Ejecuta la función post del recurso
             // echo "$resource\n$method\n\n";
             $answer = call_user_func(array(
@@ -163,7 +159,7 @@ switch ($method) {
                 $instance,
                 INIT_TABLE
             ));
-            $request = JSONUtil::decodeJSON();
+            // $request = JSONUtil::decodeJSON();
             // }
             // Innvoca la funciones http
             $answer = call_user_func(array(

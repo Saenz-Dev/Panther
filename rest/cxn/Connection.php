@@ -57,6 +57,7 @@ class Connection
     {
         if (self::$pdo == null) {
             self::$pdo = new PDO('mysql:dbname=' . DATA_BASE . ';host=' . HOST_NAME . ":3013" . ";", USER, PASSWORD, array(
+            // self::$pdo = new PDO('mysql:dbname=' . DATA_BASE . ';host=' . HOST_NAME . ";", USER, PASSWORD, array(
                 PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES UTF8"
             ));
             // Habilitar excepciones
